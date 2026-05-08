@@ -1,4 +1,4 @@
-#!/mnt/hdd/MAANG/FastApi/venv/bin/python3
+#!/mnt/hdd/MAANG/FastAPI/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
