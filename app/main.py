@@ -102,7 +102,6 @@ def get_latest_post():
 
 @app.get("/posts/{id}")
 def get_post(id : int, response : Response):
-    print
     cursor.execute(
     """SELECT * FROM posts WHERE id = %s """, (id,)
     )
@@ -110,43 +109,67 @@ def get_post(id : int, response : Response):
 
     conn.commit()
     
+    
+    
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id : {id} was not found")
     return {"post_details": post}
 
 
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/posts/{id}")
 def delete_post(id: int):
-    index = find_index_post(id)
-    if index is None:
+
+    cursor.execute(
+        """DELETE FROM posts WHERE id = %s RETURNING *""",
+        (id,)
+    )
+
+    deleted_post = cursor.fetchone()
+
+    conn.commit()
+
+    if deleted_post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Post was not found"
+            detail=f"Post with id {id} was not found"
         )
 
-    my_post.pop(index)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-from fastapi import HTTPException, status
-
+    return {
+        "message": "Post deleted successfully",
+        "deleted_post": deleted_post
+    }
 
 @app.put("/posts/{id}")
 def update_post(id: int, updated_post: Post):
 
-    index = find_index_post(id)
+    cursor.execute(
+        """
+        UPDATE posts
+        SET title = %s,
+            content = %s,
+            published = %s
+        WHERE id = %s
+        RETURNING *
+        """,
+        (
+            updated_post.title,
+            updated_post.content,
+            updated_post.published,
+            id
+        )
+    )
 
-    if index is None:
+    post = cursor.fetchone()
+
+    conn.commit()
+
+    if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Post was not found"
+            detail=f"Post with id {id} was not found"
         )
-
-    post_dict = updated_post.dict()
-    post_dict["id"] = id
-
-    my_post[index] = post_dict
 
     return {
         "message": "Post updated successfully",
-        "data": my_post[index]
+        "data": post
     }
