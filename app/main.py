@@ -2,31 +2,51 @@ from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
-app = FastAPI()
+import psycopg2
+import psycopg2.extras 
 
+
+
+app = FastAPI()
+try:
+    conn = psycopg2.connect(
+        host='localhost',
+        database='fastapi',
+        user='postgres',
+        password='admind1234',
+        port=5433,
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
+    cursor = conn.cursor()
+    print("Database connection successful")
+
+except Exception as error:
+    print("Database connection failed")
+    print("Error:", error)
+    
 class Post(BaseModel):
     name : str
     content : str
     published: bool = True
     rating : int | None = None
-    
-my_post = [
-    {
-        "title": "title of post1",
-        "content": "post 1 content",
-        "id": 1
-    },
-    {
-        "title": "title of post2",
-        "content": "post 2 content",
-        "id": 2
-    },
-    {
-        "title": "title of post3",
-        "content": "post 3 content",
-        "id": 3
-    }
-]
+        
+    my_post = [
+        {
+            "title": "title of post1",
+            "content": "post 1 content",
+            "id": 1
+        },
+        {
+            "title": "title of post2",
+            "content": "post 2 content",
+            "id": 2
+        },
+        {
+            "title": "title of post3",
+            "content": "post 3 content",
+            "id": 3
+        }
+    ]
 
 def find_post(id):
     for p in my_post:
