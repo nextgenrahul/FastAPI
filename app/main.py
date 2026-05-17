@@ -63,7 +63,7 @@ def find_post(id):
 def find_index_post(id):
     for i, p in enumerate(my_post):
         if p["id"] == id:
-            return i
+            return i 
 
 
 
