@@ -1,0 +1,4 @@
+uvicorn main:app --reload -> This command is used to run a FastAPI application using Uvicorn, which is an ASGI server. The `main:app` part indicates that the FastAPI application instance is located in the `main.py` file and is named `app`. The `--reload` flag allows the server to automatically reload when code changes are detected, which is useful during development.
+
+* Order matter in FastAPI, the order of the routes and middleware can affect how requests are processed. For example, if you have a route that matches a certain path and is defined before another route that also matches that path, the first route will be executed, and the second one will be ignored. Similarly, if you have middleware that processes requests before they reach the routes, the order in which you define the middleware can affect how requests are handled. Therefore, it's important to carefully consider the order of your routes and middleware when building a FastAPI application.
+
