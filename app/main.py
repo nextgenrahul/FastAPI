@@ -13,6 +13,7 @@ models.Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
+    
     return {"message": "FastAPI + PostgreSQL + SQLAlchemy"}
 
 
@@ -108,7 +109,7 @@ def update_post(
     id: int,
     updated_post: schemas.PostCreate,
     db: Session = Depends(get_db)
-):
+): 
 
     post_query = db.query(models.Post).filter(
         models.Post.id == id
