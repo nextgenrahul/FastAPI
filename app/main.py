@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app import models
 from app import schemas
 
+from typing import List
+
 from app.database import engine, get_db
 
 app = FastAPI()
@@ -17,12 +19,13 @@ def root():
     return {"message": "FastAPI + PostgreSQL + SQLAlchemy"}
 
 
-@app.get("/posts")
+@app.get("/posts", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
 
     posts = db.query(models.Post).all()
 
-    return {"data": posts}
+    return posts
+
 
 
 @app.post(
@@ -34,7 +37,6 @@ def create_post(
     post: schemas.PostCreate,
     db: Session = Depends(get_db)
 ):
-
     new_post = models.Post(
         title=post.title,
         content=post.content,
@@ -71,7 +73,7 @@ def get_post(
 
     return post
 
-
+ 
 @app.delete("/posts/{id}")
 def delete_post(
     id: int,
