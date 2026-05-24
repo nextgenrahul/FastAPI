@@ -5,11 +5,15 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from typing import List
 
-router = APIRouter()   
+
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"]
+)
 
 
 
-@router.get("/posts", response_model=List[schemas.PostResponse])
+@router.get("/", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
 
     posts = db.query(models.Post).all()
@@ -19,7 +23,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @router.post(
-    "/posts",
+    "/",
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.PostResponse
 )
@@ -43,7 +47,7 @@ def create_post(
 
 
 @router.get(
-    "/posts/{id}",
+    "/{id}",
     response_model=schemas.PostResponse
 )
 def get_post(
@@ -63,8 +67,8 @@ def get_post(
 
     return post
 
- 
-@router.delete("/posts/{id}")
+
+@router.delete("/{id}")
 def delete_post(
     id: int,
     db: Session = Depends(get_db)
@@ -94,7 +98,7 @@ def delete_post(
 
 
 @router.put(
-    "/posts/{id}",
+    "/{id}",
     response_model=schemas.PostResponse
 )
 def update_post(
