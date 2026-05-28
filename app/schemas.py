@@ -23,7 +23,7 @@ class PostResponse(PostBase):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    hashed_password: str
+    password: str
 
 
 class UserResponse(BaseModel):
