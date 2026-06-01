@@ -1,4 +1,5 @@
-from psycopg2 import IntegrityError
+from sqlalchemy.exc import IntegrityError
+from app import oauth2
 from .. import utils, schemas, models
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
@@ -21,7 +22,6 @@ def get_posts(db: Session = Depends(get_db)):
     return posts
 
 
-
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
@@ -29,8 +29,12 @@ def get_posts(db: Session = Depends(get_db)):
 )
 def create_post(
     post: schemas.PostCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenData = Depends(
+        oauth2.get_current_user
+    )
 ):
+
     new_post = models.Post(
         title=post.title,
         content=post.content,
@@ -44,7 +48,6 @@ def create_post(
     db.refresh(new_post)
 
     return new_post
-
 
 @router.get(
     "/{id}",
