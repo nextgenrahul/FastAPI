@@ -60,8 +60,8 @@ def verify_access_token(
             algorithms=[ALGORITHM]
         )
 
-        id: int = payload.get("user_id")
-
+        id = payload.get("user_id")
+        
         if id is None:
             raise credentials_exception
 

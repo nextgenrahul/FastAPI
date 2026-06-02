@@ -34,7 +34,7 @@ def create_post(
         oauth2.get_current_user
     )
 ):
-
+    print(current_user)
     new_post = models.Post(
         title=post.title,
         content=post.content,
@@ -61,7 +61,7 @@ def get_post(
     post = db.query(models.Post).filter(
         models.Post.id == id
     ).first()
-
+    
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
