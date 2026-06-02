@@ -15,8 +15,9 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.PostResponse])
-def get_posts(db: Session = Depends(get_db)):
-
+def get_posts(db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(
+        oauth2.get_current_user
+    )):
     posts = db.query(models.Post).all()
 
     return posts
@@ -30,11 +31,10 @@ def get_posts(db: Session = Depends(get_db)):
 def create_post(
     post: schemas.PostCreate,
     db: Session = Depends(get_db),
-    current_user: schemas.TokenData = Depends(
+    user_id: schemas.TokenData = Depends(
         oauth2.get_current_user
     )
 ):
-    print(current_user)
     new_post = models.Post(
         title=post.title,
         content=post.content,
@@ -55,7 +55,9 @@ def create_post(
 )
 def get_post(
     id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenData = Depends(
+        oauth2.get_current_user)
 ):
 
     post = db.query(models.Post).filter(
@@ -74,7 +76,9 @@ def get_post(
 @router.delete("/{id}")
 def delete_post(
     id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenData = Depends(
+        oauth2.get_current_user)
 ):
 
     post_query = db.query(models.Post).filter(
@@ -107,7 +111,9 @@ def delete_post(
 def update_post(
     id: int,
     updated_post: schemas.PostCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.TokenData = Depends(
+        oauth2.get_current_user)
 ): 
 
     post_query = db.query(models.Post).filter(
