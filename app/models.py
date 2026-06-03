@@ -1,4 +1,5 @@
-from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean, text
+
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean, text
 from app.database import Base
 
 
@@ -9,19 +10,20 @@ class Post(Base):
 
     title = Column(String, nullable=False)
 
-    content = Column(String, nullable=False)
+    content = Column(String, nullable=False) 
 
     published = Column(Boolean, default=True)
 
     created_at = Column(
         TIMESTAMP(timezone=True),
-        nullable=False,
+        nullable=False, 
         server_default=text('now()')
     )
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
-
+ 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "users" 
 
     id = Column(Integer, primary_key=True, nullable=False)
 
@@ -29,7 +31,7 @@ class User(Base):
 
     password = Column(String, nullable=False)
 
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True) 
 
     created_at = Column(
         TIMESTAMP(timezone=True),
