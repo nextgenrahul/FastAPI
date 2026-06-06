@@ -76,7 +76,7 @@ def get_post(
 
 
 @router.delete("/{id}")
-def delete_post(
+def delete_post( 
     id: int,
     db: Session = Depends(get_db) ,
     current_user: schemas.TokenData = Depends(
