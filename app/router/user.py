@@ -14,7 +14,7 @@ router = APIRouter(
 def create_user(user:schemas.UserCreate, db: Session = Depends(get_db)):
     password = utils.hash_password(user.password)
     new_user = models.User(
-        email=user.email,
+        email=user.email, 
         password=password
     )
     try:

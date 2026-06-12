@@ -36,7 +36,7 @@ def create_post(
     )
 ):
     new_post = models.Post(
-        title=post.title,
+        title=post.title, 
         content=post.content,
         published=post.published,
         owner_id = user_id.id
