@@ -54,7 +54,7 @@ def create_post(
 @router.get(
     "/{id}",
     response_model=schemas.PostResponse
-)
+) 
 def get_post(
     id: int,
     db: Session = Depends(get_db),
