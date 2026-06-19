@@ -1,10 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 from app import oauth2
 from .. import utils, schemas, models
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
-from typing import List
+from typing import List, Optional
 
 
 router = APIRouter(
@@ -12,13 +12,12 @@ router = APIRouter(
     tags=["Posts"]
 )
 
-
-
 @router.get("/", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(
         oauth2.get_current_user
-    )):
-    posts = db.query(models.Post).all()
+    ), limit: int = 10, skip : int = 0, search: Optional[str] = ""):
+    print(limit)
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     # posts = db.query(models.Post).filter(
     #     models.Post.owner_id == current_user.id
     # ) 
@@ -68,7 +67,7 @@ def get_post(
     post = db.query(models.Post).filter(
         models.Post.id == id
     ).first()
-   
+
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
