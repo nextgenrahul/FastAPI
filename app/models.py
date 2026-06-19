@@ -1,7 +1,7 @@
 
 from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, Boolean, text
 from app.database import Base
-
+from sqlalchemy.orm import relationship
 
 class Post(Base):
     __tablename__ = "posts"
@@ -20,6 +20,7 @@ class Post(Base):
         server_default=text('now()')
     )
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User")
 
  
 class User(Base):
