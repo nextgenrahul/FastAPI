@@ -5,7 +5,8 @@ from app import models
 from app.database import engine
 
 from .router import post, user, auth
-
+from .config import settings
+print(settings.database_password)
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
@@ -14,6 +15,6 @@ app.include_router(post.router)
 app.include_router(auth.router)
 
 
-@app.get("/")
+@app.get("/")   
 def root():
     return {"message": "FastAPI + PostgreSQL + SQLAlchemy"}
