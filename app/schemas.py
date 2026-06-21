@@ -1,6 +1,9 @@
+from typing import Annotated
+
+from pydantic import BaseModel, Field, conint
 
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint
 
 
     
@@ -48,3 +51,9 @@ class PostResponse(PostBase):
     
     class Config:
         from_attributes = True
+
+
+
+class Vote(BaseModel):
+    post_id: int
+    dir: Annotated[int, Field(ge=0, le=1)]
