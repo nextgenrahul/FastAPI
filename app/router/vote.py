@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/vote",
-    tages=['Vote']
+    tags=["Users"] 
 )
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -14,6 +14,17 @@ def vote(
     current_user: int = Depends(oauth2.get_current_user)
 ):
 
+    # Check if post exists
+    post = db.query(models.Post).filter(
+        models.Post.id == vote.post_id
+    ).first()
+
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {vote.post_id} does not exist"
+        )
+
     vote_query = db.query(models.Vote).filter(
         models.Vote.post_id == vote.post_id,
         models.Vote.user_id == current_user.id
@@ -21,12 +32,13 @@ def vote(
 
     found_vote = vote_query.first()
 
+    # Add Vote
     if vote.dir == 1:
 
         if found_vote:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail="You have already voted on this post"
+                detail="User has already voted on this post"
             )
 
         new_vote = models.Vote(
@@ -37,8 +49,11 @@ def vote(
         db.add(new_vote)
         db.commit()
 
-        return {"message": "Successfully added vote"}
+        return {
+            "message": "Successfully added vote"
+        }
 
+    # Remove Vote
     else:
 
         if not found_vote:
@@ -53,4 +68,6 @@ def vote(
 
         db.commit()
 
-        return {"message": "Successfully deleted vote"}
+        return {
+            "message": "Successfully removed vote"
+        }
