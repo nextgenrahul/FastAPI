@@ -5,9 +5,7 @@ from app import models
 from app.database import engine
 
 from .router import post, user, auth, vote
-from .config import settings
 
-print("DB PASSWORD:", settings.database_password)
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
