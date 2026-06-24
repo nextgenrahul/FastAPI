@@ -14,7 +14,6 @@ def vote(
     current_user: int = Depends(oauth2.get_current_user)
 ):
 
-    # Check if post exists
     post = db.query(models.Post).filter(
         models.Post.id == vote.post_id
     ).first()

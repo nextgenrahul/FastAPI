@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import BaseModel, Field, conint
+from pydantic import BaseModel, ConfigDict, Field, conint
 
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, conint
@@ -53,6 +53,13 @@ class PostResponse(PostBase):
         from_attributes = True
 
 
+class PostOut(BaseModel):
+    Post: PostResponse
+    votes: int
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 class Vote(BaseModel):
     post_id: int
