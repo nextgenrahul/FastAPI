@@ -42,6 +42,7 @@ class User(Base):
         server_default=text('now()')
     ),
     
+    phone_number = Column(String)
 
 class Vote(Base):
     __tablename__ = "votes"
