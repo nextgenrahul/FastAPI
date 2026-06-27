@@ -92,7 +92,7 @@ def create_post(
 
 @router.get(
     "/{id}",
-    response_model=schemas.PostResponse
+    response_model=schemas.PostOut
 ) 
 def get_post(
     id: int,
@@ -101,9 +101,23 @@ def get_post(
         oauth2.get_current_user)
 ):
 
-    post = db.query(models.Post).filter(
-        models.Post.id == id
-    ).first()
+    # post = db.query(models.Post).filter(
+    #     models.Post.id == id
+    # ).first()
+    post = (
+        db.query(
+            models.Post,
+            func.count(models.Vote.post_id).label("votes")
+        )
+        .join(
+            models.Vote,
+            models.Vote.post_id == models.Post.id,
+            isouter=True
+        )
+        .group_by(models.Post.id)
+        .filter(models.Post.id == id).first()
+        )
+    
 
     if post is None:
         raise HTTPException(
